@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import CharacterTextSplitter 
 from langchain_openai import OpenAIEmbeddings
-from langchain_chroma import Chroma    
+from langchain_chroma import Chroma  
+import os  
 
 
 import gradio as gr
@@ -56,7 +57,7 @@ def retrieve_semantic_recomendation(
         book_recs.sort_values(by="anger", ascending=False, inplace=True)
     elif tone == "Neutral":
         book_recs.sort_values(by="neutral", ascending=False, inplace=True)
-    elif tone == "Suprising":
+    elif tone == "Surprising":
         book_recs.sort_values(by="surprise", ascending=False, inplace=True)
     elif tone == "Suspenseful":
         book_recs.sort_values(by="fear", ascending=False, inplace=True)
@@ -93,7 +94,7 @@ def recommend_books(
     return results
 
 categories = ["All"] + sorted(books["simple_categories"].unique())
-tones =["All"] + [ "Happy", "Sad", "Angry", "Neutral", "Suprising", "Suspenseful"]
+tones =["All"] + [ "Happy", "Sad", "Angry", "Neutral", "Surprising", "Suspenseful"]
 
 
 with gr.Blocks(theme =gr.themes.Glass()) as dashboard:
@@ -114,4 +115,7 @@ with gr.Blocks(theme =gr.themes.Glass()) as dashboard:
 
 
     if __name__ == "__main__":
-        dashboard.launch(share=True)
+        dashboard.launch(
+        server_name="0.0.0.0",
+        server_port=int(os.environ.get("PORT", 10000))
+    )
